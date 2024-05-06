@@ -1,16 +1,17 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useLiff } from "./components/LiffProvider";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { addToDoList, removeToDoList } from "@/lib/features/todo";
+import {
+  setToDoLists,
+  addToDoList,
+  setToDoListPseudo,
+} from "@/lib/features/todo";
+import { useLiff } from "./components/LiffProvider";
+import axios from "axios";
+import xss from "xss";
 
-interface Profile {
-  userId: string;
-  displayName: string;
-  pictureUrl: string;
-  statusMessage: string;
-}
 export default function Home() {
   // redux hooks
   const todo = useAppSelector((state) => state.todo.lists);
@@ -20,91 +21,148 @@ export default function Home() {
   const { liff } = useLiff();
 
   // local state
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [title, setTitle] = useState<string>("");
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   // functions
-  function addItem() {
+  async function getTodoList() {
+    axios
+      .get("/api/todos", {
+        headers: {
+          "x-liff-accesstoken": liff?.getAccessToken() || "",
+        },
+      })
+      .then((res) => {
+        dispatch(setToDoLists(res.data.todos.rows));
+      });
+  }
+  async function postTodoList() {
+    const text = xss(title.trim());
+    if (!text) return;
+    setTitle("");
+    await axios.post(
+      "/api/todos",
+      {
+        title: text,
+        description: text,
+      },
+      {
+        headers: {
+          "x-liff-accesstoken": liff?.getAccessToken() || "",
+        },
+      }
+    );
+  }
+  async function deleteTodoList(id: string) {
+    await axios
+      .delete(`/api/todos`, {
+        headers: {
+          "x-liff-accesstoken": liff?.getAccessToken() || "",
+        },
+        data: {
+          id,
+        },
+      })
+      .then((res) => {
+        getTodoList();
+      });
+  }
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    if (title) addPsuedoTodoList(title);
+    await postTodoList();
+    setSubmitting(false);
+    getTodoList();
+  }
+  async function handleDelete(e: React.FormEvent, index: number) {
+    e.preventDefault();
+    dispatch(setToDoListPseudo(index));
+    deleteTodoList(todo[index].id);
+  }
+
+  function addPsuedoTodoList(title: string) {
     dispatch(
       addToDoList({
-        id: Math.random().toString(36).substr(2, 9),
-        title: "New todo list",
+        id: "0",
+        title: xss(title),
+        description: xss(title),
         createdAt: new Date().toISOString(),
-        createdUserId: profile?.userId || "",
-        items: [],
+        createdUserId: "0",
+        psuedo: true,
       })
     );
   }
 
   // side effects
   useEffect(() => {
-    if (liff) {
-      liff.getProfile().then((profile) => {
-        setProfile(profile as Profile);
-      });
-    }
+    if (!liff?.isLoggedIn()) return;
+    getTodoList();
   }, [liff]);
+
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 left-0 w-full">
-        <nav className="w-full flex items-center justify-between p-4">
-          <h1 className="text-2xl font-bold">LIFF TODO</h1>
-          <div className="flex justify-end items-center gap-2">
-            <p className="text-sm">{profile?.displayName || "Guest"}</p>
-            <Image
-              src={profile?.pictureUrl || "/icon-defaultUser.svg"}
-              alt="profile image"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-          </div>
-        </nav>
-      </header>
+    <div className="min-h-screen box-border">
       <main className="relative flex flex-col items-center justify-between p-2">
         {todo.length > 0 ? (
           <ul className="w-full max-w-lg">
-            {todo.map((list) => (
-              <li
-                key={list.id}
-                className="flex items-center justify-between p-4 bg-gray-100 rounded-lg mb-4"
-              >
-                <div>
-                  <h2 className="text-lg font-bold">{list.title}</h2>
-                </div>
-                <button
-                  className=""
-                  onClick={() => dispatch(removeToDoList(list.id))}
+            {todo.map((list, index) => (
+              <Link key={list.id} href={`/todo/${list.id}`}>
+                <li
+                  className={`flex items-center justify-between p-4 rounded-lg mb-4 ${
+                    list.psuedo ? "bg-gray-500" : "bg-gray-50"
+                  }`}
                 >
-                  <Image
-                    src="/icon-delete.svg"
-                    alt="delete todo list"
-                    width={30}
-                    height={30}
-                  />
-                  <span className="sr-only">Delete</span>
-                </button>
-              </li>
+                  <div>
+                    <h2 className="text-lg font-bold">{list.title}</h2>
+                  </div>
+                  <button
+                    className=""
+                    onClick={(e) => handleDelete(e, index)}
+                    disabled={list.psuedo}
+                  >
+                    <Image
+                      src="/icon-delete.svg"
+                      alt="delete todo list"
+                      width={30}
+                      height={30}
+                    />
+                    <span className="sr-only">Delete</span>
+                  </button>
+                </li>
+              </Link>
             ))}
           </ul>
         ) : (
-          <></>
+          <li className="rounded-xl p-2 flex justify-center">
+            <h1 className="bg-white bg-opacity-30 px-2 font-normal text-sm rounded-full text-gray-800">
+              No ToDo list yet
+            </h1>
+          </li>
         )}
-        <button
-          className="fixed flex items-center justify-start gap-2 rounded-lg max-w-full bg-green-500 bottom-5 py-2 pr-4 pl-2"
-          onClick={addItem}
+        <form
+          className="fixed bottom-0 w-full p-2 bg-gray-950 flex items-center gap-2"
+          onSubmit={handleSubmit}
         >
-          <img
-            src="/icon-add.svg"
-            alt="create new todo list"
-            width={40}
-            height={40}
+          <input
+            type="text"
+            className="w-full p-2 rounded-xl text-gray-50 bg-gray-700"
+            placeholder="Create new todo list"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            readOnly={submitting}
           />
-          <span className="text-white text-lg font-bold">
-            Create new todo list
-          </span>
-        </button>
+          <button type="submit" disabled={submitting}>
+            <Image
+              src="/icon-add.svg"
+              alt="create new todo list"
+              width={36}
+              height={36}
+            />
+            <span className="sr-only">Create new todo list</span>
+          </button>
+        </form>
       </main>
-      {/* <CreateToDoHalfModal /> */}
     </div>
   );
 }

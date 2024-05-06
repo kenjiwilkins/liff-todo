@@ -8,6 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { usePathname } from "next/navigation";
 import { Liff } from "@line/liff";
 
 const LiffContext = createContext<{
@@ -26,25 +27,28 @@ export const LiffProvider: FC<PropsWithChildren<{ liffId: string }>> = ({
 }) => {
   const [liff, setLiff] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState<string | null>(null);
+  const pathname = usePathname();
+  const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${pathname}`;
   const initLiff = useCallback(async () => {
     try {
       const liffModule = await import("@line/liff");
       const liff = liffModule.default;
       await liff.init({ liffId });
-      console.log("LIFF init success.");
       setLiff(liff);
       if (!liff.isLoggedIn()) {
-        liff.login();
+        liff.login({
+          redirectUri,
+        });
       }
     } catch (error) {
       console.log("LIFF init failed.");
       setLiffError((error as Error).toString());
     }
-  }, [liffId]);
+  }, []);
   useEffect(() => {
     console.log("LIFF init start.");
     initLiff();
-  }, [initLiff]);
+  }, []);
   return (
     <LiffContext.Provider value={{ liff, liffError }}>
       {children}

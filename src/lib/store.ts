@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import todo from "./features/todo";
-import counterReducer from "./features/counter/counterSlice";
+import todoItem from "./features/todoItem";
 
 export const makeStore = () =>
   configureStore({
     reducer: {
       todo,
-      counter: counterReducer,
+      todoItem,
     },
   });
 

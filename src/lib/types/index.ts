@@ -1,17 +1,20 @@
-export interface IToDoItem {
+export interface IToDoList {
+  id: string;
+  title: string;
+  createdAt: string;
+  createdUserId: string;
+  description: string;
+  psuedo?: boolean;
+}
+
+export interface IToDoListItem {
   id: string;
   text: string;
   done: boolean;
   lastDoneFlippingDate: string;
   lastDoneFlippingUserId: string;
-}
-
-export interface IToDoList {
-  id: string;
-  title: string;
-  items: IToDoItem[];
-  createdAt: string;
-  createdUserId: string;
+  list_id: string;
+  psuedo?: boolean;
 }
 
 export interface IUser {
