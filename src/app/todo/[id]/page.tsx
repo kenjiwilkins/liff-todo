@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   setToDoItems,
@@ -117,18 +117,38 @@ export default function Page({ params }: { params: { id: string } }) {
     getTodoItems();
   }
 
-  function shareTodo() {
-    liff?.shareTargetPicker(
-      [
+  async function shareTodo(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      const result = await axios.post(
+        "/api/share",
         {
-          type: "text",
-          text: "",
+          list_id: id,
         },
-      ],
-      {
-        isMultiple: false,
+        {
+          headers: {
+            "x-liff-accesstoken": liff?.getAccessToken() || "",
+          },
+        }
+      );
+      if (result) {
+        const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/shared/${result.data.sharedId}`;
+        liff?.shareTargetPicker(
+          [
+            {
+              type: "text",
+              text: shareUrl,
+            },
+          ],
+          {
+            isMultiple: false,
+          }
+        );
       }
-    );
+    } catch (e: unknown) {
+      const error = e as AxiosError;
+      console.log(error);
+    }
   }
 
   // side effects
@@ -138,13 +158,13 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [liff]);
 
   return (
-    <div className="relative min-h-screen box-border">
+    <div className="relative h-full box-border">
       {title && (
         <div className="w-full p-4 bg-slate-950">
           <h1 className="text-xl font-bold text-gray-50">{title}</h1>
         </div>
       )}
-      <main className="relative flex flex-col items-center justify-between p-2">
+      <main className="relative min-h-screen max-h-full flex flex-col items-center justify-between p-2">
         <ul className="w-full flex flex-col gap-2">
           {todoItems.length > 0 ? (
             todoItems.map((item, index) => (
@@ -184,7 +204,7 @@ export default function Page({ params }: { params: { id: string } }) {
         className="fixed bottom-0 w-full p-2 bg-gray-950 flex items-center gap-2"
         onSubmit={handleSubmit}
       >
-        <button type="button">
+        <button type="button" onClick={shareTodo}>
           <Image
             src="/icon-share.svg"
             alt="share ToDo"

@@ -25,7 +25,8 @@ export async function createSharedTable() {
     create table shared (
       id uuid primary key default gen_random_uuid(),
       todo_list_id uuid references todo_list(id),
-      is_shared boolean default false
+      is_shared boolean default false,
+      shared_user_id text
     )
   `;
   return create;
@@ -208,9 +209,20 @@ export async function deleteShared(id: string) {
 }
 
 export async function addShared(todoListId: string) {
+  // add shared todo list and return the id
   const add = await sql`
     insert into shared (todo_list_id)
     values (${todoListId})
+    returning id
+  `;
+  return add;
+}
+
+export async function addSharedUserId(id: string, userId: string) {
+  const add = await sql`
+    update shared
+    set shared_user_id = ${userId}
+    where id = ${id}
   `;
   return add;
 }

@@ -28,7 +28,7 @@ export default function Header() {
   }, [liff]);
 
   return (
-    <header className="sticky top-0 left-0 w-full">
+    <header className="sticky top-0 left-0 w-full h-16 z-10 bg-white">
       <nav className="w-full flex items-center justify-between p-4">
         <Link href="/">
           <h1 className="text-2xl font-bold">LIFF TODO</h1>
