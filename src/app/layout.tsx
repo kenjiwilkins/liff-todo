@@ -1,8 +1,8 @@
 "use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { LiffProvider } from "./components/LiffProvider";
-import StoreProvider from "./StoreProvider";
+import { LiffProvider } from "./providers/LiffProvider";
+import StoreProvider from "./providers/StoreProvider";
 import Header from "./components/Header";
 import "./globals.css";
 

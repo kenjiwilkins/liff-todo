@@ -1,6 +1,9 @@
 "use client";
 import Image from "next/image";
+import Router from "next/router";
 import { useEffect, useState } from "react";
+import InfoLabel from "@/app/components/texts/InfoLabel";
+import InfoText from "@/app/components/texts/InfoText";
 import axios, { AxiosError } from "axios";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
@@ -9,7 +12,7 @@ import {
   setToDoItemPseudo,
   flipToDoItem,
 } from "@/lib/features/todoItem";
-import { useLiff } from "@/app/components/LiffProvider";
+import { useLiff } from "@/app/providers/LiffProvider";
 import { sanitize } from "@/lib/helpers";
 
 export default function Page({ params }: { params: { id: string } }) {
@@ -133,17 +136,10 @@ export default function Page({ params }: { params: { id: string } }) {
       );
       if (result) {
         const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/shared/${result.data.sharedId}`;
-        liff?.shareTargetPicker(
-          [
-            {
-              type: "text",
-              text: shareUrl,
-            },
-          ],
-          {
-            isMultiple: false,
-          }
-        );
+        const lineShareUrl = `https://api.line.me/social-plugin/metrics?url=${encodeURIComponent(
+          shareUrl
+        )}`;
+        window.history.pushState({}, "", shareUrl);
       }
     } catch (e: unknown) {
       const error = e as AxiosError;
@@ -160,9 +156,9 @@ export default function Page({ params }: { params: { id: string } }) {
   return (
     <div className="relative h-full box-border">
       {title && (
-        <div className="w-full p-4 bg-slate-950">
-          <h1 className="text-xl font-bold text-gray-50">{title}</h1>
-        </div>
+        <InfoLabel>
+          <InfoText text={title} />
+        </InfoLabel>
       )}
       <main className="relative min-h-screen max-h-full flex flex-col items-center justify-between p-2">
         <ul className="w-full flex flex-col gap-2">
@@ -192,10 +188,10 @@ export default function Page({ params }: { params: { id: string } }) {
               </li>
             ))
           ) : (
-            <li className="rounded-xl p-2 flex justify-center">
-              <h1 className="bg-white bg-opacity-30 px-2 font-normal text-sm rounded-full text-gray-800">
-                No ToDo list item yet
-              </h1>
+            <li className="list-none">
+              <InfoLabel>
+                <InfoText text="No ToDo list item yet" />
+              </InfoLabel>
             </li>
           )}
         </ul>

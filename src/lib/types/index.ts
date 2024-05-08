@@ -22,3 +22,8 @@ export interface IUser {
   name: string;
   pictureUrl: string;
 }
+
+export interface IToast {
+  message: string;
+  type: "success" | "error" | "info";
+}

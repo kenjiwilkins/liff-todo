@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
-import { useLiff } from "@/app/components/LiffProvider";
+import { useLiff } from "@/app/providers/LiffProvider";
 import Link from "next/link";
 
 enum Status {

@@ -119,6 +119,24 @@ export async function findToDoListByCreatedUserId(createdUserId: string) {
   return find;
 }
 
+export async function findToDoListBySharedUserId(sharedUserId: string) {
+  const find = await sql`
+    select * from shared
+    where shared_user_id = ${sharedUserId}
+  `;
+  if (find.rows.length === 0) {
+    return find;
+  } else {
+    const todoListIds = find.rows.map((row: any) => row.todo_list_id);
+    const todoListIdsString = todoListIds.join(", ");
+    const todoLists = await sql`
+      select * from todo_list
+      where id = any(array[${todoListIdsString}])
+    `;
+    return todoLists;
+  }
+}
+
 export async function findToDoListById(id: string) {
   const find = await sql`
     select * from todo_list

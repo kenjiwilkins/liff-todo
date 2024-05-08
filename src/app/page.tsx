@@ -2,13 +2,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import InfoLabel from "./components/texts/InfoLabel";
+import InfoText from "./components/texts/InfoText";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   setToDoLists,
   addToDoList,
   setToDoListPseudo,
 } from "@/lib/features/todo";
-import { useLiff } from "./components/LiffProvider";
+import { useLiff } from "./providers/LiffProvider";
 import axios from "axios";
 import xss from "xss";
 
@@ -104,6 +106,11 @@ export default function Home() {
   return (
     <div className="min-h-screen box-border">
       <main className="relative flex flex-col items-center justify-between p-2">
+        {todo.length > 0 && (
+          <InfoLabel>
+            <InfoText text="Your ToDo list" />
+          </InfoLabel>
+        )}
         {todo.length > 0 ? (
           <ul className="w-full max-w-lg">
             {todo.map((list, index) => (
@@ -134,10 +141,10 @@ export default function Home() {
             ))}
           </ul>
         ) : (
-          <li className="rounded-xl p-2 flex justify-center">
-            <h1 className="bg-white bg-opacity-30 px-2 font-normal text-sm rounded-full text-gray-800">
-              No ToDo list yet
-            </h1>
+          <li className="list-none">
+            <InfoLabel>
+              <InfoText text="No ToDo list found" />
+            </InfoLabel>
           </li>
         )}
         <form
