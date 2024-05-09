@@ -11,6 +11,7 @@
   "dependencies": {
     "@line/liff": "^2.23.2",
     "@reduxjs/toolkit": "^2.2.3",
+    "@sentry/nextjs": "^7.114.0",
     "@vercel/postgres": "^0.8.0",
     "axios": "^1.6.8",
     "next": "14.2.2",
