@@ -52,7 +52,7 @@ export default function Home() {
         headers: {
           "x-liff-accesstoken": liff?.getAccessToken() || "",
         },
-      }
+      },
     );
   }
   async function deleteTodoList(id: string) {
@@ -93,7 +93,7 @@ export default function Home() {
         createdAt: new Date().toISOString(),
         createdUserId: "0",
         psuedo: true,
-      })
+      }),
     );
   }
 
@@ -104,7 +104,7 @@ export default function Home() {
   }, [liff]);
 
   return (
-    <div className="min-h-screen box-border">
+    <div className="box-border min-h-screen">
       <main className="relative flex flex-col items-center justify-between p-2">
         {todo.length > 0 && (
           <InfoLabel>
@@ -116,7 +116,7 @@ export default function Home() {
             {todo.map((list, index) => (
               <Link key={list.id} href={`/todo/${list.id}`}>
                 <li
-                  className={`flex items-center justify-between p-4 rounded-lg mb-4 ${
+                  className={`mb-4 flex items-center justify-between rounded-lg p-4 ${
                     list.psuedo ? "bg-gray-500" : "bg-gray-50"
                   }`}
                 >
@@ -148,12 +148,12 @@ export default function Home() {
           </li>
         )}
         <form
-          className="fixed bottom-0 w-full p-2 bg-gray-950 flex items-center gap-2"
+          className="fixed bottom-0 flex w-full items-center gap-2 bg-gray-950 p-2"
           onSubmit={handleSubmit}
         >
           <input
             type="text"
-            className="w-full p-2 rounded-xl text-gray-50 bg-gray-700"
+            className="w-full rounded-xl bg-gray-700 p-2 text-gray-50"
             placeholder="Create new todo list"
             value={title}
             onChange={(e) => setTitle(e.target.value)}

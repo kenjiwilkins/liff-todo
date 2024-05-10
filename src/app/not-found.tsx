@@ -8,8 +8,8 @@ import Image from "next/image";
 
 export default function Component() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[100dvh] gap-6 px-4 md:px-6">
-      <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+    <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-6 px-4 md:px-6">
+      <div className="flex flex-col items-center justify-center gap-6 md:flex-row">
         <Image
           alt="404 Illustration"
           className="max-w-[600px] sm:max-w-[800px]"
@@ -21,7 +21,7 @@ export default function Component() {
           <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Congrats. You broke me.
           </h1>
-          <p className="text-gray-500 max-w-[500px] md:text-lg">
+          <p className="max-w-[500px] text-gray-500 md:text-lg">
             The page you are looking for does not exist. But do not worry, you
             can always go back home and start fresh.
           </p>

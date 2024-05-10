@@ -55,7 +55,7 @@ export default function Page({ params }: { params: { id: string } }) {
         headers: {
           "x-liff-accesstoken": liff?.getAccessToken() || "",
         },
-      }
+      },
     );
   }
 
@@ -98,12 +98,12 @@ export default function Page({ params }: { params: { id: string } }) {
         psuedo: true,
         lastDoneFlippingDate: new Date().toISOString(),
         lastDoneFlippingUserId: "0",
-      })
+      }),
     );
   }
   async function flipItem(
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) {
     dispatch(flipToDoItem({ index, isDone: e.target.checked }));
     await axios.put(
@@ -115,7 +115,7 @@ export default function Page({ params }: { params: { id: string } }) {
         headers: {
           "x-liff-accesstoken": liff?.getAccessToken() || "",
         },
-      }
+      },
     );
     getTodoItems();
   }
@@ -132,12 +132,12 @@ export default function Page({ params }: { params: { id: string } }) {
           headers: {
             "x-liff-accesstoken": liff?.getAccessToken() || "",
           },
-        }
+        },
       );
       if (result) {
         const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/shared/${result.data.sharedId}`;
         const lineShareUrl = `https://api.line.me/social-plugin/metrics?url=${encodeURIComponent(
-          shareUrl
+          shareUrl,
         )}`;
         window.history.pushState({}, "", shareUrl);
       }
@@ -154,19 +154,19 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [liff]);
 
   return (
-    <div className="relative h-full box-border">
+    <div className="relative box-border h-full">
       {title && (
         <InfoLabel>
           <InfoText text={title} />
         </InfoLabel>
       )}
-      <main className="relative min-h-screen max-h-full flex flex-col items-center justify-between p-2">
-        <ul className="w-full flex flex-col gap-2">
+      <main className="relative flex max-h-full min-h-screen flex-col items-center justify-between p-2">
+        <ul className="flex w-full flex-col gap-2">
           {todoItems.length > 0 ? (
             todoItems.map((item, index) => (
               <li
                 key={item.id}
-                className={`w-full rounded-lg p-4 flex gap-2 justify-between items-center ${
+                className={`flex w-full items-center justify-between gap-2 rounded-lg p-4 ${
                   item.psuedo ? "bg-gray-500" : "bg-gray-50"
                 }`}
               >
@@ -175,7 +175,7 @@ export default function Page({ params }: { params: { id: string } }) {
                   checked={!!item.done}
                   onChange={(e) => flipItem(e, index)}
                 />
-                <p className="font-bold w-full text-lg">{item.text}</p>
+                <p className="w-full text-lg font-bold">{item.text}</p>
                 <button onClick={(e) => handleDelete(e, index)}>
                   <Image
                     src="/icon-delete.svg"
@@ -197,7 +197,7 @@ export default function Page({ params }: { params: { id: string } }) {
         </ul>
       </main>
       <form
-        className="fixed bottom-0 w-full p-2 bg-gray-950 flex items-center gap-2"
+        className="fixed bottom-0 flex w-full items-center gap-2 bg-gray-950 p-2"
         onSubmit={handleSubmit}
       >
         <button type="button" onClick={shareTodo}>
@@ -212,7 +212,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <input
           type="text"
           placeholder="Add new item"
-          className="w-full px-2 rounded-xl text-gray-50 bg-gray-700"
+          className="w-full rounded-xl bg-gray-700 px-2 text-gray-50"
           value={newItemText}
           onChange={(e) => setNewItemText(e.target.value)}
           readOnly={submitting}

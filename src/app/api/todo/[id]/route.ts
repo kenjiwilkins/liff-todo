@@ -10,7 +10,7 @@ import {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const liffAccessToken = req.headers.get("x-liff-accesstoken");
   if (!liffAccessToken) {
@@ -18,7 +18,7 @@ export async function GET(
       {
         message: "Unauthorized",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   const result = await axios.get(`https://api.line.me/oauth2/v2.1/userinfo`, {
@@ -31,7 +31,7 @@ export async function GET(
       {
         message: `Unauthorized: ${result.statusText}`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   } else {
     try {
@@ -41,7 +41,7 @@ export async function GET(
           {
             message: "Unauthorized",
           },
-          { status: 401 }
+          { status: 401 },
         );
       }
       const todoListItems = await getTodoItemsByListId(todo.rows[0].id);
@@ -52,7 +52,7 @@ export async function GET(
         },
         {
           status: 200,
-        }
+        },
       );
     } catch (error) {
       console.error(error);
@@ -62,7 +62,7 @@ export async function GET(
         },
         {
           status: 500,
-        }
+        },
       );
     }
   }
@@ -70,7 +70,7 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const liffAccessToken = req.headers.get("x-liff-accesstoken");
   const body = await req.json();
@@ -79,7 +79,7 @@ export async function POST(
       {
         message: "Invalid request body",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!liffAccessToken) {
@@ -87,7 +87,7 @@ export async function POST(
       {
         message: "Unauthorized",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   const result = await axios.get(`https://api.line.me/oauth2/v2.1/userinfo`, {
@@ -100,7 +100,7 @@ export async function POST(
       {
         message: `Unauthorized: ${result.statusText}`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   } else {
     try {
@@ -110,13 +110,13 @@ export async function POST(
           {
             message: "Unauthorized",
           },
-          { status: 401 }
+          { status: 401 },
         );
       }
       const todoItem = await addTodoItem(
         body.text,
         todo.rows[0].id,
-        result.data.sub
+        result.data.sub,
       );
       return NextResponse.json(
         {
@@ -124,7 +124,7 @@ export async function POST(
         },
         {
           status: 201,
-        }
+        },
       );
     } catch (error) {
       console.error(error);
@@ -134,7 +134,7 @@ export async function POST(
         },
         {
           status: 500,
-        }
+        },
       );
     }
   }
@@ -142,7 +142,7 @@ export async function POST(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const liffAccessToken = req.headers.get("x-liff-accesstoken");
   if (!liffAccessToken) {
@@ -150,7 +150,7 @@ export async function PUT(
       {
         message: "Unauthorized",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   // verify PUT body
@@ -160,7 +160,7 @@ export async function PUT(
       {
         message: "Invalid request body",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const result = await axios.get(`https://api.line.me/oauth2/v2.1/userinfo`, {
@@ -173,7 +173,7 @@ export async function PUT(
       {
         message: `Unauthorized: ${result.statusText}`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   } else {
     try {
@@ -189,7 +189,7 @@ export async function PUT(
         },
         {
           status: 500,
-        }
+        },
       );
     }
   }
@@ -197,7 +197,7 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const liffAccessToken = req.headers.get("x-liff-accesstoken");
   if (!liffAccessToken) {
@@ -205,7 +205,7 @@ export async function DELETE(
       {
         message: "Unauthorized",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   // verify DELETE body
@@ -215,7 +215,7 @@ export async function DELETE(
       {
         message: "Invalid request body",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const result = await axios.get(`https://api.line.me/oauth2/v2.1/userinfo`, {
@@ -228,7 +228,7 @@ export async function DELETE(
       {
         message: `Unauthorized: ${result.statusText}`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   } else {
     try {
@@ -239,7 +239,7 @@ export async function DELETE(
           {
             message: "Unauthorized",
           },
-          { status: 401 }
+          { status: 401 },
         );
       }
       await deleteTodoItem(params.id);
@@ -254,7 +254,7 @@ export async function DELETE(
         },
         {
           status: 500,
-        }
+        },
       );
     }
   }

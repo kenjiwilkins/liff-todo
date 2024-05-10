@@ -28,7 +28,7 @@ export const todoItemSlice = createSlice({
     },
     flipToDoItem: (
       state,
-      action: PayloadAction<{ isDone: boolean; index: number }>
+      action: PayloadAction<{ isDone: boolean; index: number }>,
     ) => {
       state.items[action.payload.index].done = action.payload.isDone;
       console.log(state.items[action.payload.index].done);

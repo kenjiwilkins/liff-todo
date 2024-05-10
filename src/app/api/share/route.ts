@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
       {
         message: "Unauthorized",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   // verify GET query
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
       {
         message: "Missing parameters",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const listId = searchParams.get("list_id");
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
       {
         message: "Invalid list_id",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
       {
         message: `Unauthorized: ${result.statusText}`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   } else {
     try {
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
             {
               message: "No shared found",
             },
-            { status: 404 }
+            { status: 404 },
           );
         }
         if (
@@ -67,14 +67,14 @@ export async function GET(req: NextRequest) {
             },
             {
               status: 200,
-            }
+            },
           );
         } else {
           return NextResponse.json(
             {
               message: "Unauthorized",
             },
-            { status: 401 }
+            { status: 401 },
           );
         }
       } else {
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
           {
             message: "No shared todo list found",
           },
-          { status: 404 }
+          { status: 404 },
         );
       }
     } catch (error) {
@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
         {
           message: `Failed to get shared: ${error}`,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
       {
         message: "Unauthorized",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   // verify POST body
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
       {
         message: "Missing parameters",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!verifyUUID(body.list_id)) {
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
       {
         message: "Invalid list_id",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const result = await axios.get(`https://api.line.me/oauth2/v2.1/userinfo`, {
@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
       {
         message: `Unauthorized: ${result.statusText}`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   } else {
     try {
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
         },
         {
           status: 201,
-        }
+        },
       );
     } catch (error) {
       console.error(error);
@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
         {
           message: `Failed to add shared todo list: ${error}`,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }
@@ -167,7 +167,7 @@ export async function PUT(req: NextRequest) {
       {
         message: "Unauthorized",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   // verify PUT body
@@ -177,7 +177,7 @@ export async function PUT(req: NextRequest) {
       {
         message: "Missing parameters",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!verifyUUID(body.list_id)) {
@@ -185,7 +185,7 @@ export async function PUT(req: NextRequest) {
       {
         message: "Invalid list_id",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const shared = await getShared(body.list_id);
@@ -194,7 +194,7 @@ export async function PUT(req: NextRequest) {
       {
         message: "No shared found, or already shared",
       },
-      { status: 404 }
+      { status: 404 },
     );
   }
   const result = await axios.get(`https://api.line.me/oauth2/v2.1/userinfo`, {
@@ -207,7 +207,7 @@ export async function PUT(req: NextRequest) {
       {
         message: `Unauthorized: ${result.statusText}`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   } else {
     try {
@@ -221,7 +221,7 @@ export async function PUT(req: NextRequest) {
         {
           message: `Failed to share todo list: ${error}`,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }

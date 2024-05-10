@@ -56,7 +56,7 @@ export default function Component({ params }: { params: { id: string } }) {
   }, [liff]);
 
   return (
-    <div className="flex flex-col gap-4 h-screen w-full items-center justify-center">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-4">
       <div className="animate-spin">
         {status === Status.Loading && (
           <LoaderIcon className="h-12 w-12 text-gray-500" />
@@ -83,7 +83,7 @@ export default function Component({ params }: { params: { id: string } }) {
           </Link>
         )}
         {status === Status.Error && (
-          <p className="text-gray-500 max-w-[500px] md:text-lg">
+          <p className="max-w-[500px] text-gray-500 md:text-lg">
             Something went wrong. Please try again later.
           </p>
         )}

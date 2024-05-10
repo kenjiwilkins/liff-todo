@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
       {
         message: "Unauthorized",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   const result = await axios.get(`https://api.line.me/oauth2/v2.1/userinfo`, {
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
       {
         message: `Unauthorized: ${result.statusText}`,
       },
-      { status: 401 }
+      { status: 401 },
     );
   } else {
     try {
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
         },
         {
           status: 200,
-        }
+        },
       );
     } catch (error) {
       console.error(error);
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
   }

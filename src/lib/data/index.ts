@@ -94,7 +94,7 @@ export async function getToDoListTable() {
 export async function addToDoListTable(
   title: string,
   description: string,
-  createdUserId: string
+  createdUserId: string,
 ) {
   const add = await sql`
     insert into todo_list (title, created_user_id, description)
@@ -156,7 +156,7 @@ export async function getSharedUserIdsByToDoListId(todoListId: string) {
 export async function addTodoItem(
   text: string,
   listId: string,
-  lastDoneFlippingUserId: string
+  lastDoneFlippingUserId: string,
 ) {
   const add = await sql`
     insert into todo_item (text, list_id, last_done_flipping_user_id)
@@ -176,7 +176,7 @@ export async function getTodoItemsByListId(listId: string) {
 export async function setTodoItemDone(
   id: string,
   done: boolean,
-  userId: string
+  userId: string,
 ) {
   const set = await sql`
     update todo_item
